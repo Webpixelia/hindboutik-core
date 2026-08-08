@@ -1,6 +1,6 @@
 # HindBoutik Core
 
-> **Plugin généraliste WordPress / WooCommerce pour HindBoutik**
+> **Plugin modulaire WordPress / WooCommerce fournissant des fonctionnalités personnalisées et des composants réutilisables pour HindBoutik.**
 
 ## Objectif
 
@@ -8,17 +8,19 @@ Centraliser **tous** les mu-plugins, snippets et widgets tiers dans un seul plug
 
 ## Architecture
 
-hindboutik-core/ 
-├── hindboutik-core.php ← Bootstrap + PSR-4 autoloader ├── app/ 
-│ ├── Core/ ← Infrastructure 
-│ ├── Acf/ ← Remplacement ACF (MetaApi, MetaManager, Migration) 
-│ ├── Admin/ ← Pages d'options WordPress
-│ ├── Features/ ← Classes métier (1 feature = 1 classe) 
-│ └── Helpers/ ← Utilities 
-├── assets/ ← JS + CSS (admin & frontend) 
-├── templates/ ← Templates PHP (rendering) 
-├── includes/helpers.php ← Fonctions globales 
-└── languages/ ← Traductions
+hindboutik-core/
+├── hindboutik-core.php       # Bootstrap + PSR-4 autoloader
+├── app/
+│   ├── Core/                 # Infrastructure
+│   ├── Acf/                  # Remplacement ACF (MetaApi, MetaManager, Migration)
+│   ├── Admin/                # Pages d'options WordPress
+│   ├── Features/             # Classes métier (1 feature = 1 classe)
+│   └── Helpers/              # Utilities
+├── assets/                   # JS + CSS (admin & frontend)
+├── templates/                # Templates PHP (rendering)
+├── includes/
+│   └── helpers.php           # Fonctions globales
+└── languages/                # Traductions
 
 
 ### Principes de design
@@ -61,6 +63,7 @@ $desc = hindboutik_get_field('description', $product_id);
 ```
 
 ## Migration
+
 La migration s'exécute automatiquement à l'activation du plugin:
 
 ``` php
@@ -77,17 +80,19 @@ wp eval "require_once 'wp-content/plugins/hindboutik-core/app/Acf/Migration.php'
 ```
 
 ## Shortcodes
-Shortcode	Feature	Description
-[custom_size_guide]	SizeGuide	Modal guide des tailles
-[product_content_details]	ProductContentDetails	Onglets description/livraison
-[crosssell_carousel]	CrosssellCarousel	Carousel produits recommandés
-[custom_product_image_grid]	ProductImageGrid	Grille d'images
-[current_product_image_slider]	ProductImageSlider	Slider Slick
-[woo_cart_but]	MenuIcons	Bouton panier
-[yith_wcwl_items_count]	MenuIcons	Compteur favoris
-[klarna_badge]	KlarnaBadge	Badge Klarna
-[ts_progress_bar_free_shipping]	FreeShippingProgress	Barre de progression
-[ts_message_after]	AfterMessage	Messages retours/SAV
+
+| Shortcode | Feature | Description |
+|---|---|---|
+| `[custom_size_guide]` | `SizeGuide` | Modal guide des tailles |
+| `[product_content_details]` | `ProductContentDetails` | Onglets description/livraison |
+| `[crosssell_carousel]` | `CrosssellCarousel` | Carousel produits recommandés |
+| `[custom_product_image_grid]` | `ProductImageGrid` | Grille d'images |
+| `[current_product_image_slider]` | `ProductImageSlider` | Slider Slick |
+| `[woo_cart_but]` | `MenuIcons` | Bouton panier |
+| `[yith_wcwl_items_count]` | `MenuIcons` | Compteur favoris |
+| `[klarna_badge]` | `KlarnaBadge` | Badge Klarna |
+| `[ts_progress_bar_free_shipping]` | `FreeShippingProgress` | Barre de progression |
+| `[ts_message_after]` | `AfterMessage` | Messages retours/SAV |
 
 
 ## `languages/hindboutik-core-fr_FR.po` (extrait)
@@ -177,6 +182,7 @@ msgstr "Favoris"
 ```
 
 ## Utilisation WP-CLI
+
 ```cli
 wp hindboutik features              # Liste toutes les features + status
 wp hindboutik toggle whatsapp_widget # Active/désactive le widget WhatsApp
@@ -186,7 +192,8 @@ wp hindboutik migrate               # (Re)lance la migration ACF -> natif
 wp hindboutik migrate --force       # Idem, en écrasant les options déjà migrées
 ```
 
-## Options WordPress créées
+## Options de configuration des modules créées
+
 | Option | Valeur par défaut | Description |
 |--------|-------------------|-------------|
 | `hindboutik_feature_enabled_whatsapp_widget` | 1 | Widget WhatsApp |
@@ -210,10 +217,12 @@ wp hindboutik migrate --force       # Idem, en écrasant les options déjà migr
 | `hindboutik_feature_enabled_free_shipping_label` | 1 | Label "OFFERT" |
 
 ## Dépendances
+
 WordPress ≥ 5.9
 WooCommerce ≥ 6.0
 PHP ≥ 7.4
 YITH WooCommerce Wishlist (optionnel, pour les favoris)
 
 ## Licence
+
 GPLv3 — Webpixelia

@@ -133,6 +133,7 @@ class AssetManager
         $this->registerJs('product-slider',       'product-slider.js',               ['jquery', 'slick-js'], HINDBOUTIK_CORE_VERSION);
         $this->registerJs('plus-minus',           'plus-minus.js',                   ['jquery'], HINDBOUTIK_CORE_VERSION);
         $this->registerJs('whatsapp-widget',      'frontend/whatsapp-widget.js',     ['jquery'], HINDBOUTIK_CORE_VERSION);
+        $this->registerJs('sticky-add-to-cart',   'frontend/sticky-add-to-cart.js',  ['jquery'], HINDBOUTIK_CORE_VERSION);
 
         // Frontend CSS
         $this->registerCss('crosssell-carousel',  'crosssell-carousel.css',   ['swiper-css'], HINDBOUTIK_CORE_VERSION);
@@ -143,6 +144,7 @@ class AssetManager
         $this->registerCss('progress-bar',        'frontend/progress-bar.css',  [], HINDBOUTIK_CORE_VERSION);
         $this->registerCss('color-swatches',      'frontend/color-swatches.css', [], HINDBOUTIK_CORE_VERSION);
         $this->registerCss('after-message',       'frontend/after-message.css', [], HINDBOUTIK_CORE_VERSION);
+        $this->registerCss('sticky-add-to-cart',  'frontend/sticky-add-to-cart.css', [], HINDBOUTIK_CORE_VERSION);
 
         // Admin JS
         $this->registerAdminJs('size-guide-admin', 'admin/size-guide-admin.js', ['jquery', 'wp-i18n', 'wp-element'], HINDBOUTIK_CORE_VERSION);

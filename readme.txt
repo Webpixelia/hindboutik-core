@@ -2,7 +2,7 @@
 Contributors: webpixelia
 Requires at least: 5.9
 Tested up to: 6.6
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -31,6 +31,7 @@ Fonctionnalités :
 * Colonne d'état TVA dans l'admin
 * Label "OFFERT" pour points relais
 * Widget WhatsApp flottant
+* Barre d'achat collante (mobile) sur la fiche produit
 
 == Installation ==
 
@@ -40,6 +41,14 @@ Fonctionnalités :
 4. Configurez le widget WhatsApp depuis HindBoutik → Réglages
 
 == Changelog ==
+
+= 1.1.0 =
+* Nouvelle feature : barre d'achat collante (mobile) sur la fiche produit
+* Apparaît quand le bouton d'ajout au panier sort du viewport
+* Libellé adapté à l'état de la sélection de variation (aucune / valide / rupture)
+* Rappel du nom, du coloris/taille sélectionné et du prix
+* Sans sélection : remontée et surlignage bref de la zone de variations, sans message d'erreur
+* En rupture : bouton inactif "Épuisé" + nombre d'alternatives encore disponibles
 
 = 1.0.0 =
 * Première version générique regroupant tous les mu-plugins et snippets

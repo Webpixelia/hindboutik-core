@@ -3,7 +3,7 @@
  * Plugin Name: HindBoutik Core
  * Plugin URI: https://hindboutik.com
  * Description: Plugin généraliste regroupant tous les mu-plugins et snippets de HindBoutik. Remplace ACF par des méta natives WordPress.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Webpixelia
  * Author URI: https://webpixelia.com
  * Text Domain: hindboutik-core
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 }
 
 // Plugin version.
-define('HINDBOUTIK_CORE_VERSION', '1.0.0');
+define('HINDBOUTIK_CORE_VERSION', '1.1.0');
 
 // Plugin paths.
 define('HINDBOUTIK_CORE_DIR', plugin_dir_path(__FILE__));

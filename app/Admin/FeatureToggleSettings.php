@@ -25,6 +25,7 @@ use HindBoutik\Features\TaxStatusColumn\TaxStatusColumnFeature;
 use HindBoutik\Features\FreeShippingLabel\FreeShippingLabelFeature;
 use HindBoutik\Features\WhatsAppWidget\WhatsAppWidgetFeature;
 use HindBoutik\Features\TopBar\TopBarFeature;
+use HindBoutik\Features\StickyAddToCart\StickyAddToCartFeature;
 
 /**
  * Admin page to toggle individual features on/off.
@@ -181,6 +182,13 @@ class FeatureToggleSettings
             'label'       => 'Bandeau top bar (Divi)',
             'description' => "Bandeau d'annonce en haut du site (section Header Builder Divi). Texte modifiable dans Réglages > Top bar.",
             'category'    => 'Header',
+            'default'     => true,
+        ],
+        'sticky_add_to_cart' => [
+            'class'       => StickyAddToCartFeature::class,
+            'label'       => "Barre d'achat collante (mobile)",
+            'description' => "Barre fixe en bas d'écran reprenant l'ajout au panier sur la fiche produit, avec libellé adapté à l'état de la sélection de variation (aucune / valide / rupture).",
+            'category'    => 'Produit',
             'default'     => true,
         ],
     ];

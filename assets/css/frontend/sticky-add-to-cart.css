@@ -1,0 +1,89 @@
+/* HindBoutik Core — Barre d'achat collante (mobile) */
+
+.hdb-sticky-atc {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.98);
+    border-top: 1px solid #e7e2e0;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+    transform: translateY(100%);
+    transition: transform 0.22s ease;
+}
+
+.hdb-sticky-atc.is-visible {
+    transform: none;
+}
+
+.hdb-sticky-atc__info {
+    flex: 1;
+    min-width: 0;
+}
+
+.hdb-sticky-atc__name {
+    font-size: 12.5px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hdb-sticky-atc__price {
+    font-size: 11.5px;
+    color: #8b8078;
+    margin-top: 2px;
+}
+
+.hdb-sticky-atc__btn {
+    border: none;
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    background: #941b51;
+    color: #fff;
+}
+
+/* Aucune sélection : bouton en contour, jamais grisé sans raison. */
+.hdb-sticky-atc.is-vide .hdb-sticky-atc__btn {
+    background: #fff;
+    color: #941b51;
+    border: 1px solid #941b51;
+}
+
+/* Variante en rupture : bouton inactif. */
+.hdb-sticky-atc.is-off .hdb-sticky-atc__btn {
+    background: #efebe9;
+    color: #a79c97;
+    cursor: not-allowed;
+}
+
+/* Surlignage bref du bloc de variations quand on tape "Choisir ...". */
+.hdb-sticky-atc-flash {
+    animation: hdb-sticky-atc-flash 0.9s ease;
+}
+
+@keyframes hdb-sticky-atc-flash {
+    0% {
+        background-color: #fbeff4;
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
+/* La barre est un motif mobile : sur desktop le bouton principal reste visible dans le flux. */
+@media (min-width: 768px) {
+    .hdb-sticky-atc {
+        display: none !important;
+    }
+}

@@ -64,7 +64,7 @@ class CrosssellCarouselFeature implements FeatureInterface
             'order'   => 'desc',
         ], $atts);
 
-        $crosssellIds = $this->getCrosssellProducts($atts['limit']);
+        $crosssellIds = $this->getCrosssellProductIds($atts['limit']);
 
         if (empty($crosssellIds)) {
             return '';
@@ -75,7 +75,16 @@ class CrosssellCarouselFeature implements FeatureInterface
         ]);
     }
 
-    private function getCrosssellProducts(int $limit): array
+    /**
+     * Sélectionne des IDs de produits à suggérer en complément du panier
+     * (cross-sell des articles présents, puis complété par les plus populaires).
+     *
+     * Rendue publique pour être réutilisée par CartDrawerFeature (suggestion
+     * unique/limitée dans le tiroir panier), en plus du shortcode [crosssell_carousel].
+     *
+     * @return int[]
+     */
+    public function getCrosssellProductIds(int $limit): array
     {
         $cartProductIds = [];
         if (WC()->cart && !WC()->cart->is_empty()) {

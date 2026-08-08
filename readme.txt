@@ -2,7 +2,7 @@
 Contributors: webpixelia
 Requires at least: 5.9
 Tested up to: 6.6
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -32,6 +32,7 @@ Fonctionnalités :
 * Label "OFFERT" pour points relais
 * Widget WhatsApp flottant
 * Barre d'achat collante (mobile) sur la fiche produit
+* Tiroir panier (cart drawer) avec ajout au panier ajaxifié
 
 == Installation ==
 
@@ -41,6 +42,15 @@ Fonctionnalités :
 4. Configurez le widget WhatsApp depuis HindBoutik → Réglages
 
 == Changelog ==
+
+= 1.2.0 =
+* Nouvelle feature : tiroir panier (cart drawer)
+* Ajaxifie l'ajout au panier de la fiche produit (endpoint natif wc-ajax=add_to_cart), le site n'ayant pas d'AJAX sur cet ajout jusqu'ici
+* Ouverture à l'ajout d'un article, ou au clic sur l'icône panier du header
+* Icône panier du header rendue flottante au scroll (pas de duplication, simple classe CSS/JS) — le header du site n'étant pas sticky
+* Fermeture par croix, clic sur le voile, ou touche Échap
+* Jauge de livraison offerte réutilisant le seuil de FreeShippingProgressFeature
+* Suggestion de complément (1 à 2 articles) réutilisant le moteur de CrosssellCarouselFeature
 
 = 1.1.0 =
 * Nouvelle feature : barre d'achat collante (mobile) sur la fiche produit

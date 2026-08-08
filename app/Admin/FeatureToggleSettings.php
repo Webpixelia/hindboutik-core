@@ -26,6 +26,7 @@ use HindBoutik\Features\FreeShippingLabel\FreeShippingLabelFeature;
 use HindBoutik\Features\WhatsAppWidget\WhatsAppWidgetFeature;
 use HindBoutik\Features\TopBar\TopBarFeature;
 use HindBoutik\Features\StickyAddToCart\StickyAddToCartFeature;
+use HindBoutik\Features\CartDrawer\CartDrawerFeature;
 
 /**
  * Admin page to toggle individual features on/off.
@@ -188,6 +189,13 @@ class FeatureToggleSettings
             'class'       => StickyAddToCartFeature::class,
             'label'       => "Barre d'achat collante (mobile)",
             'description' => "Barre fixe en bas d'écran reprenant l'ajout au panier sur la fiche produit, avec libellé adapté à l'état de la sélection de variation (aucune / valide / rupture).",
+            'category'    => 'Produit',
+            'default'     => true,
+        ],
+        'cart_drawer' => [
+            'class'       => CartDrawerFeature::class,
+            'label'       => 'Tiroir panier (cart drawer)',
+            'description' => "Panneau qui glisse à l'ajout au panier ou au clic sur l'icône panier du header (rendue flottante au scroll), avec jauge de livraison offerte et suggestion de complément. Ajaxifie l'ajout au panier de la fiche produit.",
             'category'    => 'Produit',
             'default'     => true,
         ],

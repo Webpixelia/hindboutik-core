@@ -1,0 +1,315 @@
+/* HindBoutik Core — Tiroir panier (cart drawer) */
+
+:root {
+    --hdb-cd-brand: #941b51;
+    --hdb-cd-brand-light: #fbeff4;
+    --hdb-cd-line: #e7e2e0;
+    --hdb-cd-muted: #8b8078;
+    --hdb-cd-text: #1c0e13;
+}
+
+/* ————————————————————————————— Voile ————————————————————————————— */
+
+.hdb-cart-drawer__overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(28, 14, 19, 0.45);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease;
+}
+
+.hdb-cart-drawer__overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ————————————————————————————— Panneau ————————————————————————————— */
+
+.hdb-cart-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1001;
+    width: min(400px, 100vw);
+    background: #fff;
+    box-shadow: -8px 0 24px rgba(28, 14, 19, 0.12);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.28s ease;
+}
+
+.hdb-cart-drawer.is-open {
+    transform: none;
+}
+
+body.hdb-cart-drawer-open {
+    overflow: hidden;
+}
+
+.hdb-cart-drawer__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--hdb-cd-line);
+}
+
+.hdb-cart-drawer__title {
+    font-family: "Marcellus", serif;
+    font-size: 17px;
+    color: var(--hdb-cd-text);
+}
+
+.hdb-cart-drawer__close {
+    border: none;
+    background: transparent;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--hdb-cd-muted);
+    padding: 4px 8px;
+}
+
+.hdb-cart-drawer__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px;
+}
+
+.hdb-cart-drawer__empty {
+    color: var(--hdb-cd-muted);
+    font-size: 13px;
+    text-align: center;
+    margin-top: 40px;
+}
+
+/* Ligne d'article */
+
+.hdb-cart-drawer__line {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--hdb-cd-line);
+}
+
+.hdb-cart-drawer__thumb {
+    flex-shrink: 0;
+    width: 64px;
+    height: 80px;
+    overflow: hidden;
+    background: #f4f0ee;
+}
+
+.hdb-cart-drawer__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hdb-cart-drawer__thumb--sm {
+    width: 48px;
+    height: 60px;
+}
+
+.hdb-cart-drawer__info {
+    flex: 1;
+    min-width: 0;
+}
+
+.hdb-cart-drawer__name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--hdb-cd-text);
+}
+
+.hdb-cart-drawer__variation {
+    font-size: 11.5px;
+    color: var(--hdb-cd-muted);
+    margin-top: 2px;
+}
+
+.hdb-cart-drawer__price {
+    font-size: 12.5px;
+    margin-top: 4px;
+}
+
+/* Sous-total */
+
+.hdb-cart-drawer__subtotal {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 14px 0;
+    font-size: 13.5px;
+}
+
+/* Jauge de livraison offerte (même seuil que [ts_progress_bar_free_shipping]) */
+
+.hdb-cart-drawer__shipping {
+    background: var(--hdb-cd-brand-light);
+    border-radius: 4px;
+    padding: 10px 12px;
+    margin-bottom: 16px;
+}
+
+.hdb-cart-drawer__shipping p {
+    font-size: 12px;
+    margin: 0 0 8px;
+    color: var(--hdb-cd-text);
+}
+
+.hdb-cart-drawer__shipping.is-reached p {
+    color: var(--hdb-cd-brand);
+    font-weight: 600;
+}
+
+.hdb-cart-drawer__gauge {
+    height: 5px;
+    background: #fff;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.hdb-cart-drawer__gauge span {
+    display: block;
+    height: 100%;
+    background: var(--hdb-cd-brand);
+    transition: width 0.3s ease;
+}
+
+/* Suggestion cross-sell (1 à 2 max, cf. CartDrawerFeature::MAX_SUGGESTIONS) */
+
+.hdb-cart-drawer__suggestions-title {
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--hdb-cd-muted);
+    margin-bottom: 10px;
+}
+
+.hdb-cart-drawer__suggestion {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+}
+
+.hdb-cart-drawer__suggestion-txt {
+    flex: 1;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.hdb-cart-drawer__add {
+    border: 1px solid var(--hdb-cd-brand);
+    background: #fff;
+    color: var(--hdb-cd-brand);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 7px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.hdb-cart-drawer__add:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+/* Pied : CTA */
+
+.hdb-cart-drawer__foot {
+    padding: 16px 20px 20px;
+    border-top: 1px solid var(--hdb-cd-line);
+}
+
+.hdb-cart-drawer__view {
+    display: block;
+    text-align: center;
+    background: var(--hdb-cd-brand);
+    color: #fff;
+    padding: 13px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+}
+
+.hdb-cart-drawer__continue {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: none;
+    border: none;
+    color: var(--hdb-cd-muted);
+    font-size: 12px;
+    text-decoration: underline;
+    padding: 10px 0 0;
+    cursor: pointer;
+}
+
+@media (max-width: 480px) {
+    .hdb-cart-drawer {
+        width: 100vw;
+    }
+}
+
+/* ——————————— Icône panier du header, flottante au scroll ——————————— */
+/*
+ * Le header HindBoutik n'est pas sticky : on ne duplique pas l'icône,
+ * on rend simplement l'existante (rendue par MenuIconsFeature, wrapper
+ * `.icon-cart` autour de `a.cart-contents`) flottante en position fixed
+ * une fois qu'on a suffisamment scrollé. Adapter le sélecteur `.icon-cart`
+ * ci-dessous si le markup réel du header Divi diffère.
+ */
+.icon-cart.is-floating {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 950;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 1px solid var(--hdb-cd-line);
+    border-radius: 50%;
+    box-shadow: 0 4px 16px rgba(28, 14, 19, 0.16);
+    animation: hdb-cart-float-in 0.2s ease;
+}
+
+.icon-cart.is-floating a.cart-contents {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* En mode flottant, on garde l'icône + le badge de compte, pas le libellé texte. */
+.icon-cart.is-floating .label_menu {
+    display: none;
+}
+
+@keyframes hdb-cart-float-in {
+    from {
+        transform: scale(0.6);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@media (min-width: 1025px) {
+    /* Pensé pour mobile/tablette : sur grand écran le header reste visible en permanence. */
+    .icon-cart.is-floating {
+        display: none;
+    }
+}

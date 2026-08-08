@@ -14,8 +14,14 @@ use HindBoutik\Core\FeatureInterface;
  */
 class FreeShippingProgressFeature implements FeatureInterface
 {
-    private float $thresholdMarketing = 139.0;
-    private float $thresholdFreeShipping = 159.0;
+    /** Seuil (€ TTC) à partir duquel le message marketing "complétez votre tenue" s'affiche. */
+    public const THRESHOLD_MARKETING = 139.0;
+
+    /** Seuil (€ TTC) de livraison offerte — réutilisé par CartDrawerFeature pour la jauge du tiroir. */
+    public const THRESHOLD_FREE_SHIPPING = 159.0;
+
+    private float $thresholdMarketing = self::THRESHOLD_MARKETING;
+    private float $thresholdFreeShipping = self::THRESHOLD_FREE_SHIPPING;
 
     public function register(): void
     {

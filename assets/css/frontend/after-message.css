@@ -1,0 +1,12 @@
+/* HindBoutik Core — After Message */
+.ts-message-after {
+    margin: 15px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border-left: 4px solid #28a745;
+}
+
+.ts-message-after p {
+    margin: 5px 0;
+}

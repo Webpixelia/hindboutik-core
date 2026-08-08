@@ -1,0 +1,56 @@
+/* HindBoutik Core — WhatsApp Widget */
+.ht-ctc.ht-ctc-chat {
+    position: fixed;
+    bottom: 20px;
+    right: 16px;
+    cursor: pointer;
+    z-index: 99999999;
+}
+
+.ht-ctc.ht-ctc-chat .ctc_chip {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f7eff3;
+    color: #941b51;
+    padding: 0 12px;
+    border-radius: 25px;
+    font-size: 13px;
+    line-height: 32px;
+}
+
+.ht-ctc.ht-ctc-chat .ctc_chip img.s4_img {
+    margin: 0 8px 0 -12px;
+    order: 0;
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+}
+
+.ht-ctc.ht-ctc-chat .ctc_cta {
+    white-space: nowrap;
+}
+
+.ht-ctc-notification .ht_ctc_badge {
+    position: absolute;
+    top: -11px;
+    right: -11px;
+    font-size: 12px;
+    font-weight: 600;
+    height: 22px;
+    width: 22px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    background: #d4065c;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ht_ctc_entry_animation {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+    animation-delay: 0s;
+    animation-iteration-count: 1;
+}

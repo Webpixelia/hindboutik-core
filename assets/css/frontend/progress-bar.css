@@ -1,0 +1,49 @@
+/* HindBoutik Core — Free Shipping Progress Bar */
+.progress-bar-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.progress-bar-container span:first-child {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.progress-bar-container span:last-child {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.progress {
+    flex: 1;
+    height: 10px;
+    background: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #ff6b6b;
+    transition: width 0.3s ease;
+}
+
+.progress-bar-success {
+    background: #28a745;
+}
+
+.progress-bar-text {
+    margin: 0;
+    font-size: 14px;
+}
+
+.progress-bar-text.success-message {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.progress-bar-text.marketing-message {
+    color: #ff6b6b;
+}

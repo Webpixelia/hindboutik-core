@@ -1,0 +1,17 @@
+/* HindBoutik Core — Product Image Grid */
+.custom-product-image-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.grid-item {
+    width: 100%;
+    overflow: hidden;
+}
+
+.grid-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+}

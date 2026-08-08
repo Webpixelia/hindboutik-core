@@ -1,0 +1,155 @@
+/* HindBoutik Core — Size Guide Modal */
+.size-guide-modal {
+    margin: 0;
+    position: fixed;
+    z-index: 199999;
+    top: 100px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 50px;
+}
+
+.modal-overlay {
+    position: fixed;
+    z-index: 10000;
+    top: -5000px;
+    right: -5000px;
+    bottom: -5000px;
+    left: -5000px;
+    background-color: rgba(0, 0, 0, 0.7);
+    animation: animatetop 0.4s;
+}
+
+.md-size-chart-modal-body {
+    box-sizing: border-box;
+    width: 100%;
+    transform: translate3d(0, 0, 0);
+    color: #2b2e38;
+    background: #fff;
+    position: relative;
+    outline: none;
+    text-size-adjust: 100%;
+    animation: animatetop 0.4s;
+    margin: 0 auto;
+    z-index: 111111;
+    overflow: hidden;
+    max-height: 100%;
+    border-radius: 5px;
+    height: auto;
+    padding-bottom: 50px;
+}
+
+.md-size-chart-close {
+    display: block;
+    width: 100%;
+    border-bottom: 1px solid lightgrey;
+    height: 50px;
+    position: relative;
+}
+
+.md-size-chart-close h2 {
+    font-size: 1.4em;
+    text-align: center;
+    height: 100%;
+    padding-top: 15px;
+}
+
+.remodal-close {
+    display: block;
+    overflow: visible;
+    font-weight: 600;
+    width: 50px;
+    height: 50px;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    transition: color 0.2s, background-color 0.2s;
+    text-decoration: none;
+    color: #95979c;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.remodal-close::before {
+    font-family: Arial, "Helvetica CY", "Nimbus Sans L", sans-serif !important;
+    font-size: 30px;
+    line-height: 50px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 48px;
+    content: "\00d7";
+    text-align: center;
+}
+
+.chart-container {
+    padding: 20px;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.chart-container .size-guide {
+    overflow: scroll;
+    width: 100%;
+    float: none;
+    clear: both;
+    margin-top: 15px;
+}
+
+.size-guide table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    border-width: 1px 0 0 1px;
+    margin: 0;
+    table-layout: auto;
+    width: 100%;
+    border: 1px solid #d1d1d1;
+    overflow: hidden;
+}
+
+#size-chart tr:nth-child(2n+1) {
+    border-bottom: 1px solid #eee;
+}
+
+#size-chart.modern tr:nth-child(2n+1) {
+    background: #ebe9eb;
+}
+
+table#size-chart tr th {
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px;
+}
+
+table#size-chart tr th,
+table#size-chart tr td {
+    text-align: center;
+    word-wrap: break-word;
+    min-width: 120px;
+    position: relative;
+    background-color: transparent;
+    transition: background-color 0.2s;
+}
+
+table#size-chart.modern tr th {
+    background: none;
+    color: #000;
+}
+
+table#size-chart.modern,
+table#size-chart.modern tr th,
+table#size-chart.modern tr td {
+    border: none;
+    background: none;
+}
+
+@keyframes animatetop {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,19 @@
+/* HindBoutik Core — Feature Toggle Admin Page */
+.hindboutik-feature-row.disabled {
+    opacity: 0.6;
+    background: #fafafa;
+}
+
+.hindboutik-feature-row td label {
+    cursor: pointer;
+}
+
+.wrap table.widefat th {
+    font-weight: 600;
+}
+
+.description {
+    margin: 3px 0 0 0;
+    color: #666;
+    font-size: 12px;
+}

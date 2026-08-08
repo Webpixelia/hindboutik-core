@@ -1,0 +1,50 @@
+/* HindBoutik Core — Size Guide Admin */
+.hindboutik-repeater {
+    margin: 20px 0;
+}
+
+.hindboutik-repeater-row {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.hindboutik-repeater-row h3 {
+    margin-top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hindboutik-repeater-row h4 {
+    margin-bottom: 10px;
+}
+
+.hindboutik-size-table {
+    width: 100%;
+    margin-bottom: 10px;
+    border-collapse: collapse;
+}
+
+.hindboutik-size-table th,
+.hindboutik-size-table td {
+    border: 1px solid #ddd;
+    padding: 5px;
+    text-align: center;
+}
+
+.hindboutik-size-table thead th {
+    background: #f6f7f7;
+}
+
+.hindboutik-remove-row,
+.hindboutik-remove-table-row {
+    color: #a00;
+    cursor: pointer;
+}
+
+.hindboutik-add-table-row,
+.hindboutik-add-category {
+    margin: 10px 0;
+}

@@ -1,0 +1,5 @@
+/* HindBoutik Core — Tax Status Admin Column */
+/* Loaded only in admin; no frontend styles needed. */
+.column-tax_status {
+    text-align: center;
+}

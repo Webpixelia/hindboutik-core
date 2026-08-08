@@ -1,0 +1,15 @@
+/* HindBoutik Core — Category Read More */
+.excerpt {
+    display: block;
+}
+
+.full-content {
+    display: none;
+}
+
+.read-more,
+.read-less {
+    color: var(--primary-color, #d4065c);
+    text-decoration: underline;
+    cursor: pointer;
+}

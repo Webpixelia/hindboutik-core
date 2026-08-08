@@ -1,0 +1,20 @@
+{
+    "name": "hindboutik/core",
+    "description": "Plugin généraliste HindBoutik — regroupe mu-plugins, snippets et remplacement natif d'ACF.",
+    "type": "wordpress-plugin",
+    "license": "GPLv3",
+    "authors": [
+        {
+            "name": "Webpixelia",
+            "email": "dev@webpixelia.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "HindBoutik\\": "app/"
+        }
+    }
+}

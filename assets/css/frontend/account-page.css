@@ -1,0 +1,16 @@
+/* HindBoutik Core — Account Page */
+.woocommerce-Address-title {
+    cursor: pointer;
+    user-select: none;
+}
+
+.woocommerce-Address-title.toggle-header::after {
+    content: "▼";
+    float: right;
+    transition: transform 0.2s;
+}
+
+.woocommerce-Address[address].active,
+.woocommerce-Address header.active {
+    display: block !important;
+}

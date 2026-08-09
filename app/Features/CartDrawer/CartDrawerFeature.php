@@ -18,10 +18,17 @@ use HindBoutik\Helpers\TemplateLoader;
  * du header (celle-ci devient flottante au scroll via CSS/JS — pas de
  * duplication de markup, cf. cart-drawer.css / cart-drawer.js).
  *
- * Le site n'ayant pas d'ajout au panier en AJAX à ce jour, le formulaire
- * `form.cart` de la fiche produit est lui-même ajaxifié côté JS via
- * l'endpoint natif `wc-ajax=add_to_cart` (le même que celui utilisé par
- * les boutons AJAX de la boucle produits).
+ * L'ajout au panier depuis la fiche produit (`form.cart`) reste natif
+ * (soumission classique, page rechargée) — le tiroir est alimenté par les
+ * boutons AJAX déjà natifs de la boucle produits ainsi que par le bouton
+ * "Ajouter" des suggestions cross-sell à l'intérieur du tiroir lui-même.
+ * Une version ajaxifiée du formulaire fiche produit existe en commentaire
+ * dans cart-drawer.js, désactivée pour écarter toute interaction avec le
+ * cache LiteSpeed/Cloudflare (cf. historique Git).
+ *
+ * L'icône panier du header conserve son comportement natif (navigation
+ * vers /panier) ; seule sa version flottante (apparue au scroll, header
+ * hors viewport) ouvre le tiroir au clic.
  *
  * Contenu du tiroir 100% réutilisé, rien de dupliqué :
  *  - jauge de livraison → même seuil que FreeShippingProgressFeature ;

@@ -1,12 +1,16 @@
 /**
  * HindBoutik Core — Tiroir panier (cart drawer)
  *
- * Le site n'ayant pas d'ajout au panier en AJAX à ce jour, ce script
- * ajaxifie lui-même le formulaire `form.cart` de la fiche produit via
- * l'endpoint natif WooCommerce `wc-ajax=add_to_cart` (le même que celui
- * utilisé par les boutons AJAX de la boucle produits), puis déclenche
- * l'évènement standard `added_to_cart` sur `document.body` — pour rester
- * compatible avec tout autre script qui l'écouterait déjà (tracking, etc.).
+ * L'ajout au panier depuis la fiche produit (`form.cart`) reste natif
+ * (soumission classique, page rechargée) : voir le bloc commenté plus bas
+ * pour la version AJAX, désactivée le temps d'écarter toute interaction
+ * avec le cache LiteSpeed/Cloudflare, à réactiver le jour où le site
+ * passera entièrement en AJAX.
+ *
+ * Le tiroir reste néanmoins alimenté par les boutons AJAX natifs de la
+ * boucle produits (WooCommerce déclenche déjà `added_to_cart` sur
+ * `document.body` dans ce cas) et par le bouton "Ajouter" des suggestions
+ * cross-sell à l'intérieur du tiroir lui-même (cf. plus bas).
  */
 jQuery(document).ready(function ($) {
     var i18n = window.hdbCartDrawer || {};
@@ -65,9 +69,11 @@ jQuery(document).ready(function ($) {
 
     /* ———————————————————— Ajout au panier (fiche produit) ———————————————————— */
 
-    // Formulaire principal de la fiche produit (simple ET variable : le bouton
-    // reste natif et désactivé tant que la variation n'est pas valide, donc
-    // ce handler ne se déclenche que sur une soumission réellement possible).
+    // DÉSACTIVÉ (2026-08) : hijack AJAX du submit de `form.cart`, remplacé par
+    // le comportement natif WooCommerce (soumission classique, rechargement).
+    // Conservé ici pour réactivation future — voir commentaire d'en-tête du
+    // fichier pour le contexte.
+    /*
     $(document).on('submit', 'form.cart', function (e) {
         var $form = $(this);
         var $submitBtn = $form.find('button[type="submit"], input[type="submit"]').first();
@@ -127,6 +133,7 @@ jQuery(document).ready(function ($) {
             $form.off('submit').trigger('submit');
         });
     });
+    */
 
     // Bouton "Ajouter" sur une suggestion cross-sell à l'intérieur du tiroir.
     $(document).on('click', '.hdb-cart-drawer__add', function () {
@@ -164,10 +171,18 @@ jQuery(document).ready(function ($) {
         openDrawer();
     });
 
-    // Icône panier du header (ou sa version flottante) : ouvre le tiroir au
-    // lieu de naviguer vers la page panier. Le lien reste fonctionnel si JS
-    // est désactivé (fallback natif vers /panier).
+    // Icône panier : comportement dissocié selon son état.
+    // - État normal (dans le header) : on laisse le lien natif faire son
+    //   travail, navigation classique vers /panier — rien à faire ici.
+    // - État flottant (icône réapparue au scroll, header hors viewport) :
+    //   ouvre le tiroir au lieu de naviguer.
     $(document).on('click', 'a.cart-contents', function (e) {
+        var $icon = $(this).closest('.icon-cart');
+
+        if (!$icon.hasClass('is-floating')) {
+            return;
+        }
+
         e.preventDefault();
         setTitle('default');
         openDrawer();

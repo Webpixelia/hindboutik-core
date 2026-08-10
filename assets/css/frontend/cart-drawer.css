@@ -268,15 +268,15 @@ body.hdb-cart-drawer-open {
  * ci-dessous si le markup réel du header Divi diffère.
  */
 .icon-cart.is-floating {
-    position: fixed;
+    position: fixed !important;
     right: 16px;
-    bottom: 16px;
+    bottom: 15vh;
     z-index: 950;
     width: 52px;
     height: 52px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     background: #fff;
     border: 1px solid var(--hdb-cd-line);
     border-radius: 50%;

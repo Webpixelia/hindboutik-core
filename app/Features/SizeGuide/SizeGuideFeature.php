@@ -54,6 +54,35 @@ class SizeGuideFeature implements FeatureInterface
     }
 
     /**
+     * Retourne le guide correspondant aux catégories du produit, ou null.
+     */
+    public static function findGuide(int $productId): ?array
+    {
+        $terms = get_the_terms($productId, 'product_cat');
+
+        if (empty($terms) || is_wp_error($terms)) {
+            return null;
+        }
+
+        $categoryIds = array_map('intval', wp_list_pluck($terms, 'term_id'));
+        $guides      = \HindBoutik\Acf\MetaApi::getField('categorie_de_produit', 'option') ?: [];
+
+        foreach ($guides as $guide) {
+            $guideCategories = $guide['categories'] ?? $guide['categorie'] ?? [];
+
+            if (!is_array($guideCategories)) {
+                continue;
+            }
+
+            if (!empty(array_intersect($categoryIds, array_map('intval', $guideCategories)))) {
+                return $guide;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Shortcode handler — renders the size guide modal.
      */
     public function shortcode(): string
@@ -62,9 +91,17 @@ class SizeGuideFeature implements FeatureInterface
             return '';
         }
 
+        $productId = get_the_ID();
+        $guide     = self::findGuide($productId);
+
+        // Catégorie sans guide, ou produit taille unique (pas de bouton) : rien à rendre.
+        if ($guide === null || \HindBoutik\Acf\MetaApi::getField('taille_unique', $productId)) {
+            return '';
+        }
+
         return $this->templates->render('size-guide-modal', [
-            'product_id'      => get_the_ID(),
-            'size_guide_data' => \HindBoutik\Acf\MetaApi::getField('categorie_de_produit', 'option') ?: [],
+            'product_id'    => $productId,
+            'matched_guide' => $guide,
         ]);
     }
 }

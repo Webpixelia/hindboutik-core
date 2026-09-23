@@ -40,6 +40,10 @@ class TailleUniqueFeature implements FeatureInterface
         }
 
         $productId = $product->get_id();
+        // Catégorie sans guide configuré : aucune mention de taille.
+        if (SizeGuideFeature::findGuide($productId) === null) {
+            return;
+        }
         $texteTailleUnique = \HindBoutik\Acf\MetaApi::getField('texte_taille_unique', $productId);
         $tailleUnique      = \HindBoutik\Acf\MetaApi::getField('taille_unique', $productId);
 

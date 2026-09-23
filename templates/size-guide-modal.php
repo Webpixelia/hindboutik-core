@@ -1,44 +1,8 @@
 <?php
 /**
  * @var int   $product_id
- * @var array $size_guide_data
+ * @var array $matched_guide
  */
-
-$product_categories = get_the_terms($product_id, 'product_cat');
-
-if (empty($product_categories)) : ?>
-
-    <p><?php esc_html_e('Pas de guide des tailles', 'hindboutik-core'); ?></p>
-
-<?php
-    return;
-endif;
-
-$category_ids = wp_list_pluck($product_categories, 'term_id');
-
-$matched_guide = null;
-
-foreach ($size_guide_data as $guide) {
-
-    $guide_categories = $guide['categories'] ?? $guide['categorie'] ?? [];
-
-    if (!is_array($guide_categories)) {
-        $guide_categories = [];
-    }
-
-    if (!empty(array_intersect($category_ids, $guide_categories))) {
-        $matched_guide = $guide;
-        break;
-    }
-}
-
-if (!$matched_guide) : ?>
-
-    <p><?php esc_html_e('Pas de guide des tailles', 'hindboutik-core'); ?></p>
-
-<?php
-    return;
-endif;
 
 $tableau = $matched_guide['tableau'] ?? [];
 ?>
@@ -47,7 +11,7 @@ $tableau = $matched_guide['tableau'] ?? [];
 
 </style>
 
-<div class="size-guide-modal" style="display:none;">
+<div class="size-guide-modal" id="size-guide-modal-<?php echo esc_attr($product_id); ?>" data-remodal-id="size-guide-modal-<?php echo esc_attr($product_id); ?>" style="display:none;">
     <div class="modal-overlay"></div>
 
     <div class="md-size-chart-modal-body medium">

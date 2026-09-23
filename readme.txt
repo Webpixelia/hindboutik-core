@@ -43,6 +43,12 @@ Fonctionnalités :
 
 == Changelog ==
 
+= 1.3.0 =
+* Amélioration de l'affichage des informations de taille selon la configuration de la catégorie produit
+* Affiche « Taille » avec le bouton du guide et la modale lorsque la catégorie est sélectionnée dans le guide et que le produit n'est pas à taille unique
+* Affiche « Taille » avec « Taille unique » ou le texte personnalisé configuré lorsque la catégorie est sélectionnée et que le produit est à taille unique
+* Masque entièrement la section de taille lorsque la catégorie n'est pas sélectionnée dans le guide, quelle que soit la configuration de taille unique
+
 = 1.2.0 =
 * Nouvelle feature : tiroir panier (cart drawer)
 * Ajaxifie l'ajout au panier de la fiche produit (endpoint natif wc-ajax=add_to_cart), le site n'ayant pas d'AJAX sur cet ajout jusqu'ici

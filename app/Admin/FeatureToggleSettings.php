@@ -202,6 +202,26 @@ class FeatureToggleSettings
     ];
 
     /**
+     * Sous-réglages : options booléennes rattachées à une feature parente,
+     * trop spécifiques pour mériter leur propre entrée dans FEATURES (pas
+     * de classe FeatureInterface dédiée, pas d'enregistrement dans la boucle
+     * Plugin::init()). Affichées comme ligne indentée sous la feature parente.
+     *
+     * key: option_id_suffix (stocké dans hindboutik_subopt_{id})
+     * parent: id de la feature parente (clé de FEATURES)
+     * label / description: affichage
+     * default: bool
+     */
+    public const SUB_OPTIONS = [
+        'cart_drawer_floating_icon' => [
+            'parent'      => 'cart_drawer',
+            'label'       => 'Icône panier flottante au scroll',
+            'description' => "Fait réapparaître l'icône panier en position flottante quand le header sort du viewport (clic = ouverture du tiroir).",
+            'default'     => true,
+        ],
+    ];
+
+    /**
      * Register the admin submenu page.
      */
     public function register(): void
@@ -231,6 +251,15 @@ class FeatureToggleSettings
             register_setting($optionGroup, 'hindboutik_feature_enabled_' . $id, [
                 'type'              => 'boolean',
                 'default'           => $feature['default'],
+                'show_in_rest'      => true,
+                'sanitize_callback' => 'rest_sanitize_boolean',
+            ]);
+        }
+
+        foreach (self::SUB_OPTIONS as $id => $subOption) {
+            register_setting($optionGroup, 'hindboutik_subopt_' . $id, [
+                'type'              => 'boolean',
+                'default'           => $subOption['default'],
                 'show_in_rest'      => true,
                 'sanitize_callback' => 'rest_sanitize_boolean',
             ]);
@@ -273,12 +302,34 @@ class FeatureToggleSettings
     }
 
     /**
+     * Check if a sub-option is enabled.
+     */
+    public static function isSubOptionEnabled(string $subOptionId): bool
+    {
+        $option = get_option('hindboutik_subopt_' . $subOptionId);
+
+        if ($option === false) {
+            return self::SUB_OPTIONS[$subOptionId]['default'] ?? false;
+        }
+
+        if (is_string($option)) {
+            return $option === '1' || $option === 'true';
+        }
+
+        return (bool) $option;
+    }
+
+    /**
      * Enable all features (reset to defaults).
      */
     public static function enableAll(): void
     {
         foreach (self::FEATURES as $id => $feature) {
             update_option('hindboutik_feature_enabled_' . $id, $feature['default'] ? 1 : 0);
+        }
+
+        foreach (self::SUB_OPTIONS as $id => $subOption) {
+            update_option('hindboutik_subopt_' . $id, $subOption['default'] ? 1 : 0);
         }
     }
 
@@ -289,6 +340,10 @@ class FeatureToggleSettings
     {
         foreach (self::FEATURES as $id => $_) {
             update_option('hindboutik_feature_enabled_' . $id, 0);
+        }
+
+        foreach (self::SUB_OPTIONS as $id => $_) {
+            update_option('hindboutik_subopt_' . $id, 0);
         }
     }
 
@@ -341,6 +396,33 @@ class FeatureToggleSettings
                                            value="1">
                                 </td>
                             </tr>
+                            <?php foreach (self::SUB_OPTIONS as $subId => $subOption): ?>
+                                <?php if ($subOption['parent'] !== $id) continue; ?>
+                                <?php
+                                $subEnabled = self::isSubOptionEnabled($subId);
+                                $subClassName = 'hindboutik-feature-row hindboutik-suboption-row';
+                                if (!$subEnabled) {
+                                    $subClassName .= ' disabled';
+                                }
+                                ?>
+                                <tr class="<?php echo esc_attr($subClassName); ?>" data-feature-id="<?php echo esc_attr($subId); ?>">
+                                    <td style="padding-left:2.5em;">
+                                        <span style="color:#8c8f94;">↳</span>
+                                        <strong><?php echo esc_html($subOption['label']); ?></strong>
+                                        <p class="description"><?php echo esc_html($subOption['description']); ?></p>
+                                    </td>
+                                    <td></td>
+                                    <td>
+                                        <input type="checkbox"
+                                               name="hindboutik_subopt_<?php echo esc_attr($subId); ?>"
+                                               value="1"
+                                               <?php checked($subEnabled, true); ?>>
+                                        <input type="hidden"
+                                               name="hindboutik_subopt_<?php echo esc_attr($subId); ?>_exists"
+                                               value="1">
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -356,10 +438,10 @@ class FeatureToggleSettings
         <script>
         jQuery(document).ready(function($){
             $('#hindboutik-enable-all').on('click', function(){
-                $('input[type="checkbox"][name^="hindboutik_feature_enabled_"]').prop('checked', true);
+                $('input[type="checkbox"][name^="hindboutik_feature_enabled_"], input[type="checkbox"][name^="hindboutik_subopt_"]').prop('checked', true);
             });
             $('#hindboutik-disable-all').on('click', function(){
-                $('input[type="checkbox"][name^="hindboutik_feature_enabled_"]').prop('checked', false);
+                $('input[type="checkbox"][name^="hindboutik_feature_enabled_"], input[type="checkbox"][name^="hindboutik_subopt_"]').prop('checked', false);
             });
         });
         </script>

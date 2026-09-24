@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace HindBoutik\Features\CartDrawer;
 
+use HindBoutik\Admin\FeatureToggleSettings;
 use HindBoutik\Core\AssetManager;
 use HindBoutik\Core\FeatureInterface;
 use HindBoutik\Core\Plugin;
@@ -76,8 +77,9 @@ class CartDrawerFeature implements FeatureInterface
         $assets->enqueueJs('cart-drawer');
 
         wp_localize_script('cart-drawer', 'hdbCartDrawer', [
-            'addText'    => __('Ajouter', 'hindboutik-core'),
-            'addingText' => __('Ajout…', 'hindboutik-core'),
+            'addText'      => __('Ajouter', 'hindboutik-core'),
+            'addingText'   => __('Ajout…', 'hindboutik-core'),
+            'floatingIcon' => FeatureToggleSettings::isSubOptionEnabled('cart_drawer_floating_icon'),
         ]);
     }
 

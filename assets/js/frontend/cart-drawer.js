@@ -203,8 +203,12 @@ jQuery(document).ready(function ($) {
 
     var $cartIcon = $('.icon-cart');
     var floatThreshold = 200; // px
+    // wp_localize_script caste les booléens PHP en chaînes ("" pour false,
+    // "1" pour true) : on ne peut donc pas comparer à `=== false`, il faut
+    // évaluer la "truthiness" de la chaîne reçue.
+    var floatingIconEnabled = !!i18n.floatingIcon; // réglable via hindboutik-features
 
-    if ($cartIcon.length && !$('body').is('.woocommerce-cart, .woocommerce-checkout')) {
+    if (floatingIconEnabled && $cartIcon.length && !$('body').is('.woocommerce-cart, .woocommerce-checkout')) {
         var ticking = false;
 
         var updateFloating = function () {

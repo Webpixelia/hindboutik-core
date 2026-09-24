@@ -44,6 +44,7 @@ Fonctionnalités :
 == Changelog ==
 
 = 1.3.0 =
+* Nouveau réglage (HindBoutik → Fonctionnalités) pour désactiver l'icône panier flottante au scroll, indépendamment du reste du tiroir panier
 * Amélioration de l'affichage des informations de taille selon la configuration de la catégorie produit
 * Affiche « Taille » avec le bouton du guide et la modale lorsque la catégorie est sélectionnée dans le guide et que le produit n'est pas à taille unique
 * Affiche « Taille » avec « Taille unique » ou le texte personnalisé configuré lorsque la catégorie est sélectionnée et que le produit est à taille unique

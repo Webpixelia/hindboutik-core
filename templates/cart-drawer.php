@@ -36,18 +36,34 @@ $isEmpty       = empty($items);
                     <div class="hdb-cart-drawer__thumb"><?php echo wp_kses_post($item['image']); ?></div>
                     <div class="hdb-cart-drawer__info">
                         <div class="hdb-cart-drawer__name"><?php echo esc_html($item['name']); ?></div>
-                        <div class="hdb-cart-drawer__variation">
-                            <?php if (!empty($item['variation_text'])) : ?>
-                                <?php echo wp_kses_post($item['variation_text']); ?> ·
-                            <?php endif; ?>
-                            <?php
-                            printf(
-                                /* translators: %d = quantité de l'article dans le panier. */
-                                esc_html__('Qté %d', 'hindboutik-core'),
-                                (int) $item['quantity']
-                            );
-                            ?>
-                        </div>
+                        <?php if (!empty($item['variation_text'])) : ?>
+                            <div class="hdb-cart-drawer__variation"><?php echo wp_kses_post($item['variation_text']); ?></div>
+                        <?php endif; ?>
+                        <?php if (!empty($item['qty_editable'])) : ?>
+                            <div class="hdb-cart-drawer__qty"
+                                 data-cart-item-key="<?php echo esc_attr((string) $item['key']); ?>"
+                                 data-min="<?php echo esc_attr((string) $item['qty_min']); ?>"
+                                 data-max="<?php echo esc_attr((string) $item['qty_max']); ?>"
+                                 data-step="<?php echo esc_attr((string) $item['qty_step']); ?>">
+                                <button type="button" class="hdb-cart-drawer__qty-btn" data-dir="-1"
+                                        aria-label="<?php echo esc_attr__('Diminuer la quantité', 'hindboutik-core'); ?>"
+                                        <?php disabled((int) $item['quantity'] <= (int) $item['qty_min']); ?>>&minus;</button>
+                                <span class="hdb-cart-drawer__qty-value" aria-live="polite"><?php echo (int) $item['quantity']; ?></span>
+                                <button type="button" class="hdb-cart-drawer__qty-btn" data-dir="1"
+                                        aria-label="<?php echo esc_attr__('Augmenter la quantité', 'hindboutik-core'); ?>"
+                                        <?php disabled((int) $item['qty_max'] > 0 && (int) $item['quantity'] >= (int) $item['qty_max']); ?>>+</button>
+                            </div>
+                        <?php else : ?>
+                            <div class="hdb-cart-drawer__variation">
+                                <?php
+                                printf(
+                                    /* translators: %d = quantité de l'article dans le panier. */
+                                    esc_html__('Qté %d', 'hindboutik-core'),
+                                    (int) $item['quantity']
+                                );
+                                ?>
+                            </div>
+                        <?php endif; ?>
                         <div class="hdb-cart-drawer__price"><?php echo wp_kses_post($item['price_html']); ?></div>
                     </div>
                     <button type="button"
@@ -96,9 +112,15 @@ $isEmpty       = empty($items);
                                 <b><?php echo esc_html($suggestion['name']); ?></b><br>
                                 <?php echo wp_kses_post($suggestion['price_html']); ?>
                             </div>
-                            <button type="button" class="hdb-cart-drawer__add" data-product-id="<?php echo esc_attr((string) $suggestion['id']); ?>">
-                                <?php esc_html_e('Ajouter', 'hindboutik-core'); ?>
-                            </button>
+                            <?php if (!empty($suggestion['ajax_add'])) : ?>
+                                <button type="button" class="hdb-cart-drawer__add" data-product-id="<?php echo esc_attr((string) $suggestion['id']); ?>">
+                                    <?php esc_html_e('Ajouter', 'hindboutik-core'); ?>
+                                </button>
+                            <?php else : ?>
+                                <a class="hdb-cart-drawer__add" href="<?php echo esc_url($suggestion['url']); ?>">
+                                    <?php esc_html_e('Choisir', 'hindboutik-core'); ?>
+                                </a>
+                            <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
                 </div>

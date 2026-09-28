@@ -157,9 +157,47 @@ body.hdb-cart-drawer-open {
     color: var(--hdb-cd-brand);
 }
 
-.hdb-cart-drawer__line.is-removing {
+.hdb-cart-drawer__line.is-busy {
     opacity: 0.4;
     pointer-events: none;
+}
+
+/* Sélecteur de quantité (− / +) */
+
+.hdb-cart-drawer__qty {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 6px;
+    border: 1px solid var(--hdb-cd-line);
+    border-radius: 3px;
+}
+
+.hdb-cart-drawer__qty-btn {
+    width: 30px;
+    height: 30px;
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    line-height: 1;
+    color: var(--hdb-cd-text);
+    cursor: pointer;
+}
+
+.hdb-cart-drawer__qty-btn:disabled {
+    color: var(--hdb-cd-line);
+    cursor: default;
+}
+
+.hdb-cart-drawer__qty-value {
+    min-width: 28px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.hdb-cart-drawer__notice {
+    margin-top: 6px;
+    font-size: 11.5px;
+    color: var(--hdb-cd-brand);
 }
 
 /* Sous-total */
@@ -238,6 +276,12 @@ body.hdb-cart-drawer-open {
     padding: 7px 12px;
     cursor: pointer;
     white-space: nowrap;
+}
+
+.hdb-cart-drawer__add {
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
 }
 
 .hdb-cart-drawer__add:disabled {

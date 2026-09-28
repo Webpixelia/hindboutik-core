@@ -43,6 +43,10 @@ Fonctionnalités :
 
 == Changelog ==
 
+= 1.3.2 =
+* Tiroir panier : ajout des boutons − / + pour modifier la quantité de chaque article (produits simples et variables), avec vérification du stock et des limites de quantité ; masqués pour les articles vendus à l'unité
+* Tiroir panier : pour les suggestions de produits à variations (ou non achetables directement), le bouton « Ajouter » est remplacé par « Choisir » qui mène à la fiche produit
+
 = 1.3.1 =
 * Tiroir panier : ajout d'une croix pour retirer un article directement depuis le tiroir (suppression AJAX, le tiroir reste ouvert et se met à jour : sous-total, jauge de livraison offerte, compteur du header)
 

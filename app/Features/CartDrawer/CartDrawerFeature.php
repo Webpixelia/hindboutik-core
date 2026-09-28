@@ -58,6 +58,7 @@ class CartDrawerFeature implements FeatureInterface
         add_filter('woocommerce_add_to_cart_fragments', [$this, 'addDrawerFragment']);
         add_action('wp_enqueue_scripts', [$this, 'enqueueAssets']);
         add_action('wc_ajax_hdb_remove_cart_item', [$this, 'ajaxRemoveCartItem']);
+        add_action('wc_ajax_hdb_update_cart_item_qty', [$this, 'ajaxUpdateCartItemQty']);
     }
 
     public function unregister(): void
@@ -66,6 +67,7 @@ class CartDrawerFeature implements FeatureInterface
         remove_filter('woocommerce_add_to_cart_fragments', [$this, 'addDrawerFragment']);
         remove_action('wp_enqueue_scripts', [$this, 'enqueueAssets']);
         remove_action('wc_ajax_hdb_remove_cart_item', [$this, 'ajaxRemoveCartItem']);
+        remove_action('wc_ajax_hdb_update_cart_item_qty', [$this, 'ajaxUpdateCartItemQty']);
     }
 
     public function enqueueAssets(): void
@@ -119,9 +121,7 @@ class CartDrawerFeature implements FeatureInterface
     public function ajaxRemoveCartItem(): void
     {
         $cart    = class_exists('WooCommerce') ? WC()->cart : null;
-        $itemKey = isset($_POST['cart_item_key']) // phpcs:ignore WordPress.Security.NonceVerification.Missing
-            ? sanitize_text_field(wp_unslash($_POST['cart_item_key'])) // phpcs:ignore WordPress.Security.NonceVerification.Missing
-            : '';
+        $itemKey = $this->postedCartItemKey();
 
         // La clé de ligne est liée à la session du visiteur : on ne peut
         // retirer que ce qui se trouve dans son propre panier.
@@ -132,10 +132,103 @@ class CartDrawerFeature implements FeatureInterface
         $cart->remove_cart_item($itemKey);
         $cart->calculate_totals();
 
+        $this->sendCartFragments($cart);
+    }
+
+    /**
+     * Endpoint AJAX (`?wc-ajax=hdb_update_cart_item_qty`) : change la quantité
+     * d'une ligne (produit simple ou variation), après vérification des
+     * bornes (min/max/pas) et du stock. En cas de refus, le panier n'est pas
+     * modifié et un message est renvoyé.
+     */
+    public function ajaxUpdateCartItemQty(): void
+    {
+        $cart    = class_exists('WooCommerce') ? WC()->cart : null;
+        $itemKey = $this->postedCartItemKey();
+        $qty     = isset($_POST['quantity']) ? (int) $_POST['quantity'] : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+        $cartItem = ($cart && $itemKey !== '') ? $cart->get_cart_item($itemKey) : null;
+
+        if (!$cart || empty($cartItem)) {
+            wp_send_json(['error' => true]);
+        }
+
+        /** @var \WC_Product $product */
+        $product = $cartItem['data'];
+
+        // Quantité nulle ou négative : équivaut à retirer l'article.
+        if ($qty <= 0) {
+            $cart->remove_cart_item($itemKey);
+            $cart->calculate_totals();
+            $this->sendCartFragments($cart);
+        }
+
+        $limits = $this->getQuantityLimits($product);
+
+        if ($qty < $limits['min'] || ($limits['max'] > 0 && $qty > $limits['max'])
+            || ($limits['step'] > 1 && $qty % $limits['step'] !== 0)) {
+            wp_send_json([
+                'error'   => true,
+                'message' => __('Cette quantité n’est pas disponible pour cet article.', 'hindboutik-core'),
+            ]);
+        }
+
+        $previousQty = (int) $cartItem['quantity'];
+
+        // Contrôle de stock natif WooCommerce (gère le stock au niveau du
+        // parent pour les variations et les quantités déjà réservées).
+        $cart->set_quantity($itemKey, $qty, false);
+        $stockCheck = $cart->check_cart_item_stock();
+
+        if (is_wp_error($stockCheck)) {
+            $cart->set_quantity($itemKey, $previousQty, false);
+
+            wp_send_json([
+                'error'   => true,
+                'message' => wp_strip_all_tags($stockCheck->get_error_message()),
+            ]);
+        }
+
+        $cart->calculate_totals();
+
+        $this->sendCartFragments($cart);
+    }
+
+    private function postedCartItemKey(): string
+    {
+        return isset($_POST['cart_item_key']) // phpcs:ignore WordPress.Security.NonceVerification.Missing
+            ? sanitize_text_field(wp_unslash($_POST['cart_item_key'])) // phpcs:ignore WordPress.Security.NonceVerification.Missing
+            : '';
+    }
+
+    /**
+     * Réponse commune : fragments (tiroir + compteur du header) et hash du panier.
+     */
+    private function sendCartFragments(\WC_Cart $cart): void
+    {
         wp_send_json([
             'fragments' => apply_filters('woocommerce_add_to_cart_fragments', []),
             'cart_hash' => $cart->get_cart_hash(),
         ]);
+    }
+
+    /**
+     * Bornes de quantité d'un produit (mêmes filtres que le champ quantité
+     * natif de WooCommerce). `max` vaut -1 quand il n'y a pas de limite.
+     *
+     * @return array{min:int, max:int, step:int}
+     */
+    private function getQuantityLimits(\WC_Product $product): array
+    {
+        $min  = (int) apply_filters('woocommerce_quantity_input_min', $product->get_min_purchase_quantity(), $product);
+        $max  = (int) apply_filters('woocommerce_quantity_input_max', $product->get_max_purchase_quantity(), $product);
+        $step = (int) apply_filters('woocommerce_quantity_input_step', 1, $product);
+
+        return [
+            'min'  => max(1, $min),
+            'max'  => $max > 0 ? $max : -1,
+            'step' => max(1, $step),
+        ];
     }
 
     private function buildDrawerVars(): array
@@ -153,12 +246,18 @@ class CartDrawerFeature implements FeatureInterface
                     continue;
                 }
 
+                $limits = $this->getQuantityLimits($product);
+
                 $items[] = [
                     'key'            => $cartItemKey,
                     'name'           => $product->get_name(),
                     'image'          => $product->get_image('thumbnail'),
                     'variation_text' => wc_get_formatted_cart_item_data($cartItem, true),
                     'quantity'       => (int) $cartItem['quantity'],
+                    'qty_min'        => $limits['min'],
+                    'qty_max'        => $limits['max'],
+                    'qty_step'       => $limits['step'],
+                    'qty_editable'   => !$product->is_sold_individually() && $limits['max'] !== 1,
                     'price_html'     => wc_price($cartItem['line_total'] + $cartItem['line_tax']),
                 ];
             }
@@ -188,7 +287,11 @@ class CartDrawerFeature implements FeatureInterface
     }
 
     /**
-     * @return array<int, array{id:int, name:string, image:string, price_html:string}>
+     * `ajax_add` vaut false pour les produits qui demandent un choix (variable,
+     * groupé…) ou qui ne sont pas achetables directement : le tiroir affiche
+     * alors un lien vers la fiche produit au lieu du bouton « Ajouter ».
+     *
+     * @return array<int, array{id:int, name:string, image:string, price_html:string, ajax_add:bool, url:string}>
      */
     private function buildSuggestions(): array
     {
@@ -214,6 +317,8 @@ class CartDrawerFeature implements FeatureInterface
                 'name'       => $product->get_name(),
                 'image'      => $product->get_image('thumbnail'),
                 'price_html' => $product->get_price_html(),
+                'ajax_add'   => $product->is_type('simple') && $product->is_purchasable() && $product->is_in_stock(),
+                'url'        => $product->get_permalink(),
             ];
         }
 

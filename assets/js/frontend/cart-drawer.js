@@ -171,11 +171,12 @@ jQuery(document).ready(function ($) {
         var $line = $btn.closest('.hdb-cart-drawer__line');
         var itemKey = $btn.data('cart-item-key');
 
-        if (!itemKey || $line.hasClass('is-removing')) {
+        if (!itemKey || $line.hasClass('is-busy')) {
             return;
         }
 
-        $line.addClass('is-removing');
+        clearTimeout(qtyTimers[itemKey]); // annule un changement de quantité en attente
+        $line.addClass('is-busy');
         $btn.prop('disabled', true);
 
         $.ajax({
@@ -185,7 +186,7 @@ jQuery(document).ready(function ($) {
             dataType: 'json',
         }).done(function (response) {
             if (!response || response.error || !response.fragments) {
-                $line.removeClass('is-removing');
+                $line.removeClass('is-busy');
                 $btn.prop('disabled', false);
                 return;
             }
@@ -200,9 +201,98 @@ jQuery(document).ready(function ($) {
 
             $(document.body).trigger('removed_from_cart', [response.fragments, response.cart_hash, $btn]);
         }).fail(function () {
-            $line.removeClass('is-removing');
+            $line.removeClass('is-busy');
             $btn.prop('disabled', false);
         });
+    });
+
+    /* ———————————————————— Quantité d'un article (− / +) ———————————————————— */
+
+    var qtyTimers = {};
+    var noticeTimer = null;
+
+    function showLineNotice($line, message) {
+        $line.find('.hdb-cart-drawer__notice').remove();
+        $('<div class="hdb-cart-drawer__notice" role="alert"></div>')
+            .text(message)
+            .appendTo($line.find('.hdb-cart-drawer__info'));
+
+        clearTimeout(noticeTimer);
+        noticeTimer = setTimeout(function () {
+            $('.hdb-cart-drawer__notice').remove();
+        }, 4000);
+    }
+
+    function refreshQtyButtons($qty, value) {
+        var min = parseInt($qty.data('min'), 10) || 1;
+        var max = parseInt($qty.data('max'), 10);
+
+        $qty.find('[data-dir="-1"]').prop('disabled', value <= min);
+        $qty.find('[data-dir="1"]').prop('disabled', max > 0 && value >= max);
+    }
+
+    function sendQuantity($qty, itemKey, revertTo) {
+        var $line = $qty.closest('.hdb-cart-drawer__line');
+        var quantity = parseInt($qty.find('.hdb-cart-drawer__qty-value').text(), 10);
+
+        $line.addClass('is-busy');
+
+        $.ajax({
+            type: 'POST',
+            url: wcAjaxUrl('hdb_update_cart_item_qty'),
+            data: { cart_item_key: itemKey, quantity: quantity },
+            dataType: 'json',
+        }).done(function (response) {
+            if (!response || response.error || !response.fragments) {
+                // Refus (stock, bornes…) : on remet l'ancienne quantité et on explique.
+                $qty.find('.hdb-cart-drawer__qty-value').text(revertTo);
+                refreshQtyButtons($qty, revertTo);
+                $line.removeClass('is-busy');
+
+                if (response && response.message) {
+                    showLineNotice($line, response.message);
+                }
+                return;
+            }
+
+            var scrollTop = $drawer().find('.hdb-cart-drawer__body').scrollTop();
+
+            applyFragments(response.fragments);
+            $drawer().addClass('is-open');
+            $drawer().find('.hdb-cart-drawer__body').scrollTop(scrollTop);
+
+            $(document.body).trigger('updated_cart_totals');
+        }).fail(function () {
+            $qty.find('.hdb-cart-drawer__qty-value').text(revertTo);
+            refreshQtyButtons($qty, revertTo);
+            $line.removeClass('is-busy');
+        });
+    }
+
+    $(document).on('click', '.hdb-cart-drawer__qty-btn', function () {
+        var $qty = $(this).closest('.hdb-cart-drawer__qty');
+        var $value = $qty.find('.hdb-cart-drawer__qty-value');
+        var itemKey = $qty.data('cart-item-key');
+        var min = parseInt($qty.data('min'), 10) || 1;
+        var max = parseInt($qty.data('max'), 10);
+        var step = parseInt($qty.data('step'), 10) || 1;
+        var current = parseInt($value.text(), 10) || min;
+        var next = current + (parseInt($(this).data('dir'), 10) * step);
+
+        if ($qty.closest('.hdb-cart-drawer__line').hasClass('is-busy') || next < min || (max > 0 && next > max)) {
+            return;
+        }
+
+        // Affichage immédiat ; l'envoi est regroupé si l'on clique plusieurs fois d'affilée.
+        var lastServerQty = $qty.data('server-qty') || current;
+        $qty.data('server-qty', lastServerQty);
+        $value.text(next);
+        refreshQtyButtons($qty, next);
+
+        clearTimeout(qtyTimers[itemKey]);
+        qtyTimers[itemKey] = setTimeout(function () {
+            sendQuantity($qty, itemKey, lastServerQty);
+        }, 400);
     });
 
     /* ———————————————————————— Ouverture / fermeture ———————————————————————— */

@@ -43,6 +43,9 @@ Fonctionnalités :
 
 == Changelog ==
 
+= 1.3.1 =
+* Tiroir panier : ajout d'une croix pour retirer un article directement depuis le tiroir (suppression AJAX, le tiroir reste ouvert et se met à jour : sous-total, jauge de livraison offerte, compteur du header)
+
 = 1.3.0 =
 * Nouveau réglage (HindBoutik → Fonctionnalités) pour désactiver l'icône panier flottante au scroll, indépendamment du reste du tiroir panier
 * Amélioration de l'affichage des informations de taille selon la configuration de la catégorie produit

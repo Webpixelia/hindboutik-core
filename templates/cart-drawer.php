@@ -50,6 +50,14 @@ $isEmpty       = empty($items);
                         </div>
                         <div class="hdb-cart-drawer__price"><?php echo wp_kses_post($item['price_html']); ?></div>
                     </div>
+                    <button type="button"
+                            class="hdb-cart-drawer__remove"
+                            data-cart-item-key="<?php echo esc_attr((string) $item['key']); ?>"
+                            aria-label="<?php echo esc_attr(sprintf(
+                                /* translators: %s = nom de l'article. */
+                                __('Retirer %s du panier', 'hindboutik-core'),
+                                $item['name']
+                            )); ?>">&times;</button>
                 </div>
             <?php endforeach; ?>
 
@@ -101,7 +109,7 @@ $isEmpty       = empty($items);
 
     <div class="hdb-cart-drawer__foot">
         <a class="hdb-cart-drawer__view" href="<?php echo esc_url(function_exists('wc_get_cart_url') ? wc_get_cart_url() : '/panier'); ?>">
-            <?php esc_html_e('Voir mon panier', 'hindboutik-core'); ?>
+            <?php esc_html_e('Commander', 'hindboutik-core'); ?>
         </a>
         <button type="button" class="hdb-cart-drawer__continue" id="hdb-cart-drawer-continue">
             <?php esc_html_e('Continuer mes achats', 'hindboutik-core'); ?>

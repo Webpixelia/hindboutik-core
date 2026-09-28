@@ -164,6 +164,47 @@ jQuery(document).ready(function ($) {
         });
     });
 
+    /* ———————————————————— Suppression d'un article (croix) ———————————————————— */
+
+    $(document).on('click', '.hdb-cart-drawer__remove', function () {
+        var $btn = $(this);
+        var $line = $btn.closest('.hdb-cart-drawer__line');
+        var itemKey = $btn.data('cart-item-key');
+
+        if (!itemKey || $line.hasClass('is-removing')) {
+            return;
+        }
+
+        $line.addClass('is-removing');
+        $btn.prop('disabled', true);
+
+        $.ajax({
+            type: 'POST',
+            url: wcAjaxUrl('hdb_remove_cart_item'),
+            data: { cart_item_key: itemKey },
+            dataType: 'json',
+        }).done(function (response) {
+            if (!response || response.error || !response.fragments) {
+                $line.removeClass('is-removing');
+                $btn.prop('disabled', false);
+                return;
+            }
+
+            // Le panneau est remplacé par les fragments : on conserve son état
+            // ouvert et la position de scroll du corps du tiroir.
+            var scrollTop = $drawer().find('.hdb-cart-drawer__body').scrollTop();
+
+            applyFragments(response.fragments);
+            $drawer().addClass('is-open');
+            $drawer().find('.hdb-cart-drawer__body').scrollTop(scrollTop);
+
+            $(document.body).trigger('removed_from_cart', [response.fragments, response.cart_hash, $btn]);
+        }).fail(function () {
+            $line.removeClass('is-removing');
+            $btn.prop('disabled', false);
+        });
+    });
+
     /* ———————————————————————— Ouverture / fermeture ———————————————————————— */
 
     $(document.body).on('added_to_cart', function () {

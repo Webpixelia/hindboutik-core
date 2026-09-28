@@ -13,7 +13,7 @@ $icon_url       = $vars['icon_url']       ?? '';
 
 <div class="ht-ctc ht-ctc-chat ctc-analytics ctc_wp_desktop style-4 ht_ctc_entry_animation ht_ctc_an_entry_center ht_ctc_animation no-animation"
      id="ht-ctc-chat"
-     style="position: fixed; bottom: 20px; right: 16px; cursor: pointer; z-index: 99999999; --side: right;">
+     style="position: fixed; bottom: 20px; right: 16px; cursor: pointer; z-index: 9999; --side: right;">
 
     <div class="ht_ctc_style ht_ctc_chat_style">
         <span class="ht_ctc_notification" style="display:none; padding:0; margin:0; position:relative; float:right; z-index:9999999;">

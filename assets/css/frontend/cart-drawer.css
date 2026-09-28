@@ -32,7 +32,7 @@
     top: 0;
     right: 0;
     bottom: 0;
-    z-index: 1001;
+    z-index: 10001;
     width: min(400px, 100vw);
     background: #fff;
     box-shadow: -8px 0 24px rgba(28, 14, 19, 0.12);
@@ -135,6 +135,31 @@ body.hdb-cart-drawer-open {
 .hdb-cart-drawer__price {
     font-size: 12.5px;
     margin-top: 4px;
+}
+
+/* Croix de suppression d'un article */
+
+.hdb-cart-drawer__remove {
+    flex-shrink: 0;
+    align-self: flex-start;
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    line-height: 1;
+    color: var(--hdb-cd-muted);
+    padding: 0 2px;
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+
+.hdb-cart-drawer__remove:hover,
+.hdb-cart-drawer__remove:focus-visible {
+    color: var(--hdb-cd-brand);
+}
+
+.hdb-cart-drawer__line.is-removing {
+    opacity: 0.4;
+    pointer-events: none;
 }
 
 /* Sous-total */

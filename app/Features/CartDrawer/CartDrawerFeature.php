@@ -57,6 +57,7 @@ class CartDrawerFeature implements FeatureInterface
         add_action('wp_footer', [$this, 'renderDrawer']);
         add_filter('woocommerce_add_to_cart_fragments', [$this, 'addDrawerFragment']);
         add_action('wp_enqueue_scripts', [$this, 'enqueueAssets']);
+        add_action('wc_ajax_hdb_remove_cart_item', [$this, 'ajaxRemoveCartItem']);
     }
 
     public function unregister(): void
@@ -64,6 +65,7 @@ class CartDrawerFeature implements FeatureInterface
         remove_action('wp_footer', [$this, 'renderDrawer']);
         remove_filter('woocommerce_add_to_cart_fragments', [$this, 'addDrawerFragment']);
         remove_action('wp_enqueue_scripts', [$this, 'enqueueAssets']);
+        remove_action('wc_ajax_hdb_remove_cart_item', [$this, 'ajaxRemoveCartItem']);
     }
 
     public function enqueueAssets(): void
@@ -107,6 +109,33 @@ class CartDrawerFeature implements FeatureInterface
         $fragments['.hdb-cart-drawer'] = $this->templates->render('cart-drawer', $this->buildDrawerVars());
 
         return $fragments;
+    }
+
+    /**
+     * Endpoint AJAX (`?wc-ajax=hdb_remove_cart_item`) : retire une ligne du
+     * panier et renvoie les fragments à jour (tiroir + compteur du header),
+     * au même format que la réponse native de `add_to_cart`.
+     */
+    public function ajaxRemoveCartItem(): void
+    {
+        $cart    = class_exists('WooCommerce') ? WC()->cart : null;
+        $itemKey = isset($_POST['cart_item_key']) // phpcs:ignore WordPress.Security.NonceVerification.Missing
+            ? sanitize_text_field(wp_unslash($_POST['cart_item_key'])) // phpcs:ignore WordPress.Security.NonceVerification.Missing
+            : '';
+
+        // La clé de ligne est liée à la session du visiteur : on ne peut
+        // retirer que ce qui se trouve dans son propre panier.
+        if (!$cart || $itemKey === '' || !$cart->get_cart_item($itemKey)) {
+            wp_send_json(['error' => true]);
+        }
+
+        $cart->remove_cart_item($itemKey);
+        $cart->calculate_totals();
+
+        wp_send_json([
+            'fragments' => apply_filters('woocommerce_add_to_cart_fragments', []),
+            'cart_hash' => $cart->get_cart_hash(),
+        ]);
     }
 
     private function buildDrawerVars(): array
